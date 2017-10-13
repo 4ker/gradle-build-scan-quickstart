@@ -1,14 +1,29 @@
 plugins {
+    // make sure you declare it before any other plugin, 所以放在 java 插件前面
     id 'com.gradle.build-scan' version '1.9.1'
     id 'java'
 }
 
+// 上面的语法是 gradle 2.1 提出的, 之前的版本使用的是:
+//          apply plugin: 'com.gradle.build-scan'
+
 buildScan {
-// Uncomment the lines below to agree to the Terms of Service.
-// licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-// licenseAgree = 'yes'
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
     tag 'SAMPLE'
-    link 'GitHub', 'https://github.com/gradle/gradle-build-scan-quickstart'
+
+    // syntax:  link <label>, <URL>
+    //          link 'VCS', 'https://github.com/myorg/sample/tree/${System.getProperty('vcs.branch')}'
+    link 'GitHub', 'https://github.com/4ker/gradle-build-scan-quickstart'
+
+    // 每次 build 都 publish
+    publishAlways()
+
+    // 自己制定 server:
+    //      server = 'https://gradle.my-company.com'
+
+    // disable ssl 检查 (Disabling SSL certificate checks)
+    allowUntrustedServer = true
 }
 
 repositories {
@@ -19,3 +34,6 @@ dependencies {
     compile "com.google.guava:guava:18.0"
     testCompile "junit:junit:4.11"
 }
+
+// $ ./gradlew assemble --scan
+// $ ./gradlew clean build --scan
