@@ -1,6 +1,6 @@
 ## Listing All Gradle Tasks
 
-Then run `gradle tasks` (--all)
+Then run `gradle tasks` (--all, task 和 tasks 一样的)
 
     Starting a Gradle Daemon (subsequent builds will be faster)
 
