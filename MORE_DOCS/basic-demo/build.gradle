@@ -1,0 +1,8 @@
+plugins {
+    id 'base'
+}
+
+// Now add a task that creates a zip archive from the src directory.
+task zip(type: Zip) {
+    from 'src'
+}
