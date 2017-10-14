@@ -302,3 +302,93 @@ build
 ```
 
 ## Add a "Hello, World!" task
+
+```groovy
+task hello {
+    // Create an ad-hoc (临时, 专门) task and add an action using doLast
+    doLast {
+        println 'Hello, World!'
+    }
+}
+```
+
+仔细看一下文档: https://guides.gradle.org/writing-gradle-tasks/ (DONE)
+
+加上 group 和 description, 前者在 task listing 的时候用到, 后者就是一个文档罗.
+
+```
+task hello {
+    group 'Welcome'
+    description 'Produces a greeting'
+
+    doLast {
+        println 'Hello, World'
+    }
+}
+```
+
+```bash
+$ gradle tasks
+
+Welcome tasks
+-------------
+hello - Produces a greeting
+
+$ gradle help --task hello  
+
+> Task :help
+Detailed task information for hello
+
+Path
+     :hello
+
+Type
+     Task (org.gradle.api.Task)
+
+Description
+     Produces a greeting
+
+Group
+     Welcome
+
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed
+```
+
+来一点定制:
+
+```groovy
+// As the build DSL in a build.gradle file is a Groovy-base DSL, the class will be a Groovy class.
+class Greeting extends DefaultTask {   
+    String message 
+    String recipient
+
+    // Annotate the default task action.
+    @TaskAction 
+    void sayGreeting() {
+        // Print the message using a standard Groovy interpolated string.
+        println "${message}, ${recipient}!" 
+        println "${getDescription()}"
+    }
+}
+
+task hello (type : Greeting) { 
+    group 'Welcome'
+    description 'Produces a world greeting'
+    message 'Hello' 
+    recipient 'World'
+}
+```
+
+```bash
+$ gradle hello
+
+> Task :hello
+Hello, World!
+Produces a world greeting
+
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed
+```

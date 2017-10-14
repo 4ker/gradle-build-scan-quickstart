@@ -14,3 +14,21 @@ task copy(type: Copy) {
 
 description = 'A trivial Gradle build'
 version = '1.0'
+
+class Greeting extends DefaultTask {
+    String message
+    String recipient
+
+    @TaskAction
+    void sayGreeting() {
+        println "${message}, ${recipient}!"
+        println "${getDescription()}"
+    }
+}
+
+task hello (type : Greeting) {
+    group 'Welcome'
+    description 'Produces a world greeting'
+    message 'Hello'
+    recipient 'World'
+}
