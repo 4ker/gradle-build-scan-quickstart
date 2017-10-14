@@ -91,3 +91,13 @@ BUILD SUCCESSFUL in 1s
     task zip(type: Zip) {
         from 'src'
     }
+
+新建 src/date.txt, 运行, 生成一个压缩包:
+
+    build
+    └── distributions
+        └── basic-demo.zip 里面有一个文件: date.txt
+
+    1 directory, 1 file
+
+TODO: https://guides.gradle.org/creating-new-gradle-builds/
