@@ -35,7 +35,7 @@ BUILD SUCCESSFUL in 0s
 2 actionable tasks: 1 executed, 1 up-to-date
 ```
 
-看这个命令的文档:
+看这个命令的文档: (用 gradle task 不能看到这个 task, 需要加上 --all)
 
 ```
 $ gradle help --task run  
@@ -65,4 +65,56 @@ BUILD SUCCESSFUL in 0s
 
 ```bash
 gradle dependencies
+```
+
+`gradle build taskTree`:
+
+```
+> Task :taskTree
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+:build
++--- :assemble
+|    +--- :distTar
+|    |    +--- :jar
+|    |    |    \--- :classes
+|    |    |         +--- :compileJava
+|    |    |         \--- :processResources
+|    |    \--- :startScripts
+|    +--- :distZip
+|    |    +--- :jar
+|    |    |    \--- :classes
+|    |    |         +--- :compileJava
+|    |    |         \--- :processResources
+|    |    \--- :startScripts
+|    \--- :jar
+|         \--- :classes
+|              +--- :compileJava
+|              \--- :processResources
+\--- :check
+     \--- :test
+          +--- :classes
+          |    +--- :compileJava
+          |    \--- :processResources
+          \--- :testClasses
+               +--- :compileTestJava
+               |    \--- :classes
+               |         +--- :compileJava
+               |         \--- :processResources
+               \--- :processTestResources
+
+
+To see task dependency tree for a specific task, run gradle <project-path>:<task> <project-path>:taskTree [--no-repeat]
+Executions of all tasks except for taskTree will be skipped. They will be used for building the task graph only.
+
+Add --no-repeat to prevent printing a subtree of the same task more than once.
+
+For example, try running gradle :build :taskTree
+
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed
 ```
