@@ -1,3 +1,10 @@
+- DONE: Creating Build Scans
+- DONE: Creating New Gradle Builds (basic-demo)
+- TODO: Creating Multi-project Builds, https://guides.gradle.org/creating-multi-project-builds/
+- TODO: Building Java Libraries, https://guides.gradle.org/building-java-libraries/
+
+---
+
 # Build scan quickstart
 
 <img src="http://bit.ly/2kZWwg8" align="right" width="280" />
