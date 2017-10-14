@@ -114,31 +114,6 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-4.2-bin.zip
 
 终于知道这个 w 是啥意思了...
 
-## Configure a core task and use a plugin
-
-```
-plugins {
-    id 'base'
-}
-
-// Now add a task that creates a zip archive from the src directory.
-task zip(type: Zip) {
-    from 'src'
-}
-```
-
-新建 src/date.txt, 运行, 生成一个压缩包:
-
-```
-build
-└── distributions
-    └── basic-demo.zip 里面有一个文件: date.txt
-
-1 directory, 1 file
-```
-
-TODO: https://guides.gradle.org/creating-new-gradle-builds/
-
 ## Gradle Properties
 
 `./gradlew properties`:
@@ -278,3 +253,52 @@ description: A trivial Gradle build
 ```
 
 property 必须有这个变量才能设置.
+
+## Configure a core task and use a plugin
+
+添加一个任务:
+
+```groovy
+// Define a task called copy of type Copy (note the capital letter) that 
+// copies the src directory to a new directory called dest. 
+// (You don’t have to create the dest directory — the task will do it for you.)
+task copy(type: Copy) {
+    from 'src'
+    into 'dest'
+}
+```
+
+运行之. 复制成功.
+
+运行 gradle clean 可以清空 build 文件夹.
+
+## the Gradle Plugin Portal / 插件中心
+
+https://plugins.gradle.org/
+
+The assemble and build tasks aren’t useful in this project, 
+because they are associated with compilation and generation of a release artifact. 
+Many of the language plugins, like the java plugin, are created on top the base plugin.
+
+```
+plugins {
+    id 'base'
+}
+
+// Now add a task that creates a zip archive from the src directory.
+task zip(type: Zip) {
+    from 'src'
+}
+```
+
+新建 src/date.txt, 运行, 生成一个压缩包:
+
+```
+build
+└── distributions
+    └── basic-demo.zip 里面有一个文件: date.txt
+
+1 directory, 1 file
+```
+
+## Add a "Hello, World!" task

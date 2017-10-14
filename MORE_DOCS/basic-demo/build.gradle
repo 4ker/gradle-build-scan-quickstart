@@ -7,5 +7,10 @@ task zip(type: Zip) {
     from 'src'
 }
 
+task copy(type: Copy) {
+    from 'src'
+    into 'dest'
+}
+
 description = 'A trivial Gradle build'
 version = '1.0'
