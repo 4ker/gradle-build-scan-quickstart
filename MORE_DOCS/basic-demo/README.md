@@ -327,9 +327,9 @@ task hello {
 }
 ```
 
-```bash
-$ gradle tasks
+`$ gradle tasks`:
 
+```
 Welcome tasks
 -------------
 hello - Produces a greeting
@@ -392,3 +392,212 @@ Produces a world greeting
 BUILD SUCCESSFUL in 0s
 1 actionable task: 1 executed
 ```
+
+## Learn Groovy in Y Minutes
+
+文档: https://github.com/adambard/learnxinyminutes-docs/blob/master/groovy.html.markdown
+
+### 环境设置 / REPL
+
+```bash
+curl -s "https://get.sdkman.io" | bash
+source "$HOME/.sdkman/bin/sdkman-init.sh" 
+sdk version
+```
+
+这玩意没装上... 这了一下 REPL, 发现 IDEA 自己的 groovy console 就很好,
+在 Tools -- Groovy Console,
+
+Command+Enter 运行.
+
+### 简单语法
+
+```groovy
+def x = 5
+y = false                               // 也可以不要 def
+println x.toString() + y.toString()
+
+// interpolation
+println "${x} ${y}"                     // 单引号可以 interpolate, 双引号不行
+
+// list litaral
+list = [2, false, "good"]
+println list
+
+// list add/remove
+list << [true, false]                   // list.add
+list = list - false                     // list.remove
+
+// 实际测了一下, 发现 - 和 remove 不太一样, 前者可以跟一个 [a,b], 然后把原来 list 里的 a 和 b 都 remove,
+// 后者如果传入 [a,b] 则会把 [a,b] remove 掉
+
+println "iteration"
+list.each { println "item: $it"}
+println "iteration with index"
+list.eachWithIndex { it, i -> println "$i: $it" }
+
+item = "good"
+println item in list
+println list.contains(item)             // containsAll
+
+list.sort()                             // inplace
+list.sort(false)                        // sort in a copy
+list.clear()
+
+// map
+def map1 = [:]
+def map2 = ['k':'v', 'k2': 'v2']
+map1.put('key', 'value')
+map2.each { println "$it.key: $it.value" }
+// containsKey, containsValue
+// keySet(), values(), entrySet() (这些和 Java 的 map 没啥区别)
+
+// 字符串的比较
+if ("go"+"od"=="good") {
+    println "可以直接用 == 符号"
+}
+
+// ternary operator 
+x = condition ? a : b
+// The Elvis Operator
+y = obj.field ?: 'default'
+// 和 JS 那个很有区别, field 不能使 undefined, 有这个 field, 为空才能走到后面的 default
+
+// range 左右都是闭合的
+(0..20) // 0, 1, ..., 20
+(0..20).toArray()
+```
+
+### Groovy Beans
+
+- 如果有 access modifier, 就生成一个 field
+- 如果没有, 就是 private, 并自动生成 getter 和 setter
+- 如果是 final, 就没有 getter / setter
+- 也可以自定义 getter 和 setter (这个 groovy 也没法拦着把...)
+- 
+
+```groovy
+class Foo {
+    // read only property
+    final String name = "Roberto"
+
+    // read only property with public getter and protected setter
+    String language
+    protected void setLanguage(String language) { this.language = language }
+
+    // dynamically typed property
+    def lastName
+}
+```
+
+### Operator Overloading
+
+```groovy
+// spread operator
+["good", "bad"]*.toUpperCase()
+["good", "bad"].collect { it?.toUpperCase() }
+
+// safe navigation operator
+println null?.toString()
+```
+
+### Closures
+
+```groovy
+clos = { println "Hello World!" }
+clos()
+
+clos = { a, b -> println "$a $b" }
+clos("hello", "world")
+
+// 如果只有一个变量, 可以用 it, 而不用声明
+```
+
+### Memoize
+
+memoize 一个 closure, 很方便地 cache:
+
+```groovy
+def cl = {a, b ->
+    sleep(3000) // simulate some time consuming processing
+    a + b
+}
+
+mem = cl.memoize()
+
+def callClosure(a, b) {
+    def start = System.currentTimeMillis()
+    mem(a, b)
+    println "Inputs(a = $a, b = $b) - took ${System.currentTimeMillis() - start} msecs."
+}
+
+callClosure(1, 2)
+callClosure(1, 2)
+callClosure(2, 3)
+callClosure(2, 3)
+callClosure(3, 4)
+callClosure(3, 4)
+callClosure(1, 2)
+callClosure(2, 3)
+```
+
+### Expando
+
+这个可以很灵活地定义逻辑 (很像脚本语言了)
+
+```groovy
+def user = new Expando(name:"Roberto")
+assert 'Roberto' == user.name
+
+user.lastName = 'Pérez'
+assert 'Pérez' == user.lastName
+
+user.showInfo = { out ->
+    out << "Name: $name"
+    out << ", Last name: $lastName"
+}
+
+def sw = new StringWriter()
+println user.showInfo(sw)
+```
+
+### Metaprogramming (MOP)
+
+添加函数, 类似于 JS 给 prototype 加方法:
+
+```groovy
+String.metaClass.testAdd = { /* closure */ }
+```
+
+intercepting 方法, 看上去可以用来实现 AOP:
+
+```groovy
+//Intercepting method calls
+class Test implements GroovyInterceptable {
+    def sum(Integer x, Integer y) { x + y }
+
+    def invokeMethod(String name, args) {
+        System.out.println "Invoke method $name with args: $args"
+    }
+}
+
+def test = new Test()
+test?.sum(2,3)
+test?.multiply(2,3)
+```
+
+propertyMissing 功能, 目测这个是利用 Java 的反射功能来 getField 实现的:
+
+```groovy
+class Foo {
+   def propertyMissing(String name) { name }
+}
+def f = new Foo()
+
+assertEquals "boo", f.boo
+```
+
+### TypeChecked and CompileStatic (TODO)
+
+Groovy, by nature, is and will always be a dynamic language but 
+it supports typechecked and compilestatic.
