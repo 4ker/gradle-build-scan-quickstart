@@ -6,3 +6,6 @@ plugins {
 task zip(type: Zip) {
     from 'src'
 }
+
+description = 'A trivial Gradle build'
+version = '1.0'
