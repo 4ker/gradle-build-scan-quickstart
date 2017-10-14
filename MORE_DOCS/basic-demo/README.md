@@ -81,6 +81,35 @@ BUILD SUCCESSFUL in 1s
 1 actionable task: 1 executed
 ```
 
+wrapper 命令生成和当前 gradle 一样版本的命令行打包. 运行后多出来一些文件:
+
+```shell
+$ git status
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        gradle/
+        gradlew
+        gradlew.bat
+        
+$ tree gradle
+gradle
+└── wrapper
+    ├── gradle-wrapper.jar
+    └── gradle-wrapper.properties
+
+1 directory, 2 files
+
+$ cat gradle/wrapper/gradle-wrapper.properties 
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-4.2-bin.zip
+```
+
+终于知道这个 w 是啥意思了...
+
 ## Configure a core task and use a plugin
 
     plugins {
